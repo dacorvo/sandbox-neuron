@@ -29,14 +29,14 @@ def get_neuron_model_class(model_id):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', type=str, default='distilbert-base-uncased-finetuned-sst-2-english',
+    parser.add_argument('--model', type=str, required=True,
                         help='The model to use for inference: can be a model ID, or the path to a local directory.')
-    parser.add_argument('--dataset', type=str, default='sst2',
+    parser.add_argument('--dataset', type=str, required=True,
                         help='The dataset on which the model should be evaluated.')
+    parser.add_argument('--metric', type=str, required=True,
+                        help='The metric used to evaluate the model.')
     parser.add_argument('--num-samples', type=int,
                         help='The number of samples to use for evaluation.')
-    parser.add_argument('--metric', type=str, default='accuracy',
-                        help='The metric used to evaluate the model.')
     parser.add_argument('--input-column', type=str, default='sentence',
                         help='The name of the input column in the selected dataset.')
     parser.add_argument('--batch-size', type=int, default=1,
