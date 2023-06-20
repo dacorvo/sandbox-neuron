@@ -37,7 +37,7 @@ def main():
                         help='The metric used to evaluate the model.')
     parser.add_argument('--num-samples', type=int,
                         help='The number of samples to use for evaluation.')
-    parser.add_argument('--input-column', type=str, default='sentence',
+    parser.add_argument('--input-column', type=str, default='text',
                         help='The name of the input column in the selected dataset.')
     parser.add_argument('--batch-size', type=int, default=1,
                         help='The static batch size of the Neuron model.')
