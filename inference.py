@@ -67,8 +67,9 @@ def main():
     if args.save_dir:
         model.save_pretrained(os.path.join(args.save_dir))
 
-    # Load validation dataset
-    eval_dataset = load_dataset(args.dataset, split="validation")
+    # Load dataset
+    datasets = load_dataset(args.dataset)
+    eval_dataset = datasets["validation"] if "validation" in datasets else datasets["test"]
     if args.num_samples:
         eval_dataset = eval_dataset.select(range(args.num_samples))
 
