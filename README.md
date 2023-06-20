@@ -63,26 +63,29 @@ $ python inference.py --dataset sst2             \
 
 `model=kowsiknd/bert-base-uncased-sst2`:
 ```
-accuracy: 0.8693
-total_time_in_seconds: 2.3734
-samples_per_second: 367.4128
-latency_in_seconds: 0.0027
+                                      Hub                Neuron
+accuracy                                    0.8693              0.8693
+total_time_in_seconds                      68.1093              2.2840
+samples_per_second                         12.8029            381.7842
+latency_in_seconds                          0.0781              0.0026
 ```
 
 `model=distilbert-base-uncased-finetuned-sst-2-english`
 ```
-accuracy: 0.9106
-total_time_in_seconds: 1.7009
-samples_per_second: 512.6797
-latency_in_seconds: 0.0020
+                                      Hub                Neuron
+accuracy                                    0.9106              0.9106
+total_time_in_seconds                      34.5766              1.7844
+samples_per_second                         25.2194            488.6926
+latency_in_seconds                          0.0397              0.0020
 ```
 
 `model=Ibrahim-Alam/finetuning-roberta-base-on-sst2`
 ```
-accuracy: 0.9415
-total_time_in_seconds: 2.2931
-samples_per_second: 380.2731
-latency_in_seconds: 0.0026
+                                      Hub                Neuron
+accuracy                                    0.9415              0.9415
+total_time_in_seconds                      67.5452              2.2621
+samples_per_second                         12.9099            385.4777
+latency_in_seconds                          0.0775              0.0026
 ```
 
 ### IMDB dataset
@@ -99,24 +102,27 @@ $ python inference.py --dataset imdb      \
 
 `model=fabriceyhc/bert-base-uncased-imdb`
 ```
-accuracy: 0.8270
-total_time_in_seconds: 3.2782
-samples_per_second: 305.0423
-latency_in_seconds: 0.0033
+                                      Hub                Neuron
+accuracy                                    0.8270              0.8270
+total_time_in_seconds                      78.4664              3.2580
+samples_per_second                         12.7443            306.9348
+latency_in_seconds                          0.0785              0.0033
 ```
 
 `model=lvwerra/distilbert-imdb`
 ```
-accuracy: 0.8670
-total_time_in_seconds: 2.4173
-samples_per_second: 413.6885
-latency_in_seconds: 0.0024
+                                      Hub                Neuron
+accuracy                                    0.8670              0.8670
+total_time_in_seconds                      40.2383              2.3156
+samples_per_second                         24.8520            431.8515
+latency_in_seconds                          0.0402              0.0023
 ```
 
 `model=aychang/roberta-base-imdb`
 ```
-accuracy: 0.8440
-total_time_in_seconds: 3.1583
-samples_per_second: 316.6219
-latency_in_seconds: 0.0032
+                                      Hub                Neuron
+accuracy                                    0.8440              0.8440
+total_time_in_seconds                      80.0236              3.1624
+samples_per_second                         12.4963            316.2131
+latency_in_seconds                          0.0800              0.0032
 ```

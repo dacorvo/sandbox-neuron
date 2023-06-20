@@ -23,8 +23,28 @@ def get_neuron_model_class(model_id):
     neuron_classes = [NeuronModelForSequenceClassification]
     for neuron_class in neuron_classes:
         if neuron_class.auto_model_class == auto_model_class:
-            return neuron_class, task
+            return neuron_class, task, auto_model_class
     raise ValueError(f"{model_id} is associated to {task} which is not supported for Neuron (yet).")
+
+
+def evaluate_model(model, tokenizer, max_length, task, dataset, input_column, metric):
+    # Create evaluation pipeline
+    eval_pipe = pipeline(
+        task,
+        model=model,
+        tokenizer=tokenizer,
+        max_length=max_length,
+        padding="max_length",
+        truncation=True
+    )
+
+    # Instantiate evaluator
+    task_evaluator = evaluator(task)
+    return task_evaluator.compute(model_or_pipeline=eval_pipe,
+                                  data=dataset,
+                                  metric=metric,
+                                  input_column=input_column,
+                                  label_mapping=model.config.label2id)
 
 
 def main():
@@ -47,52 +67,57 @@ def main():
                         help='The path to save the Neuron model.')
     args = parser.parse_args()
 
-    if os.path.exists(args.model):
-        # Extract original model Hub name from the config (Too brittle ?)
-        model_id = read_model_id(args.model)
-        # Get the corresponding Neuron class
-        neuron_model_class, task = get_neuron_model_class(model_id)
-        model = neuron_model_class.from_pretrained(args.model)
-        # Sanity checks
-        assert args.batch_size == model.config.neuron_batch_size
-        assert args.seq_length == model.config.neuron_sequence_length
-    else:
-        # Get the Neuron class for the specified model_id
-        neuron_model_class, task = get_neuron_model_class(args.model)
-        model = neuron_model_class.from_pretrained(args.model,
-                                                   export=True,
-                                                   batch_size=args.batch_size,
-                                                   sequence_length=args.seq_length)
-    tokenizer = AutoTokenizer.from_pretrained(args.model)
-    if args.save_dir:
-        model.save_pretrained(os.path.join(args.save_dir))
-
     # Load dataset
     datasets = load_dataset(args.dataset)
     eval_dataset = datasets["validation"] if "validation" in datasets else datasets["test"]
     if args.num_samples:
         eval_dataset = eval_dataset.select(range(args.num_samples))
 
-    # Create evaluation pipeline
-    eval_pipe = pipeline(
-        task,
-        model=model,
-        tokenizer=tokenizer,
-        max_length=args.seq_length,
-        padding="max_length",
-        truncation=True
-    )
+    # Instantiate or load the tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(args.model)
 
-    # Instantiate evaluator
-    task_evaluator = evaluator(task)
-    metric = task_evaluator.compute(model_or_pipeline=eval_pipe,
-                                    data=eval_dataset,
-                                    metric=args.metric,
-                                    input_column=args.input_column,
-                                    label_mapping=model.config.label2id)
-    for key, value in metric.items():
-        print(f"{key}: {value:.4f}")
+    if os.path.exists(args.model):
+        # Extract original model Hub name from the config (Too brittle ?)
+        model_id = read_model_id(args.model)
+        # Get the corresponding Neuron class
+        neuron_model_class, task, _ = get_neuron_model_class(model_id)
+        neuron_model = neuron_model_class.from_pretrained(args.model)
+        # Sanity checks
+        assert args.batch_size == model.config.neuron_batch_size
+        assert args.seq_length == model.config.neuron_sequence_length
+        model = None
+    else:
+        # Get the Neuron class for the specified model_id
+        neuron_model_class, task, auto_model_class = get_neuron_model_class(args.model)
+        # Instantiate the Hub model
+        model = auto_model_class.from_pretrained(args.model)
+        # Instantiate the Neuron model
+        neuron_model = neuron_model_class.from_pretrained(args.model,
+                                                          export=True,
+                                                          batch_size=args.batch_size,
+                                                          sequence_length=args.seq_length)
+    if args.save_dir:
+        model.save_pretrained(os.path.join(args.save_dir))
 
+    # Evaluate the Neuron model
+    neuron_metric = evaluate_model(neuron_model, tokenizer, args.seq_length, task, eval_dataset, args.input_column, args.metric)
+
+    if model is not None:
+        # Evaluate also the Hub model
+        metric = evaluate_model(model, tokenizer, args.seq_length, task, eval_dataset, args.input_column, args.metric)
+
+    # Display results as a table
+    heading = "{:<30}".format('')
+    if model is not None:
+        heading +="{:^20}".format('Hub')
+    heading +="{:^20}".format('Neuron')
+    print(heading)
+    for key in neuron_metric:
+        row = f"{key:<30}"
+        if metric is not None:
+            row += f"{metric[key]:>20,.4f}"
+        row += f"{neuron_metric[key]:>20,.4f}"
+        print(row)
 
 if __name__ == "__main__":
     main()
