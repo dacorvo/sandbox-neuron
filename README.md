@@ -19,8 +19,8 @@ The inference CLI can perform an inference on either a model from the Hub or fro
 usage: inference.py [-h]
                     [--model MODEL]
                     [--dataset DATASET]
-                    [--num-samples NUM_SAMPLES]
                     [--metric METRIC]
+                    [--num-samples NUM_SAMPLES]
                     [--input-column INPUT_COLUMN]
                     [--batch-size BATCH_SIZE]
                     [--seq-length SEQ_LENGTH]
@@ -30,11 +30,11 @@ optional arguments:
   -h, --help            show this help message and exit
   --model MODEL         The model to use for inference: can be a model ID, or the path to a local directory.
   --dataset DATASET     The dataset on which the model should be evaluated.
+  --metric METRIC       The metric used to evaluate the model.
   --num-samples NUM_SAMPLES
                         The number of samples to use for evaluation.
-  --metric METRIC       The metric used to evaluate the model.
   --input-column INPUT_COLUMN
-                        The name of the input column in the selecetd dataset.
+                        The name of the input column in the selected dataset.
   --batch-size BATCH_SIZE
                         The static batch size of the Neuron model.
   --seq-length SEQ_LENGTH
