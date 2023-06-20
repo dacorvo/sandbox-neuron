@@ -90,7 +90,8 @@ def main():
                                     metric=args.metric,
                                     input_column=args.input_column,
                                     label_mapping=model.config.label2id)
-    print(metric)
+    for key, value in metric.items():
+        print(f"{key}: {value:.4f}")
 
 
 if __name__ == "__main__":

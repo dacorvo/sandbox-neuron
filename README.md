@@ -51,38 +51,72 @@ optional arguments:
 
 ### sst2 dataset
 
-Bert
-
 ```
-$ python inference.py --model kowsiknd/bert-base-uncased-sst2  \
-                      --dataset sst2                           \
-                      --input-column sentence                  \
-                      --metric accuracy                        \
-                      --batch-size 1                           \
-                      --seq-length 128
-{'accuracy': 0.8692660550458715, 'total_time_in_seconds': 2.378855768001813, 'samples_per_second': 366.56278692022636, 'latency_in_seconds': 0.002728045605506666}
+$ model=<model>
+$ python inference.py --dataset sst2             \
+                      --input-column sentence    \
+                      --metric accuracy          \
+                      --batch-size 1             \
+                      --seq-length 128           \
+                      --model $model
 ```
 
-DistilBert
-
+`model=kowsiknd/bert-base-uncased-sst2`:
 ```
-$ python inference.py --model distilbert-base-uncased-finetuned-sst-2-english  \
-                      --dataset sst2                                           \
-                      --input-column sentence                                  \
-                      --metric accuracy                                        \
-                      --batch-size 1                                           \
-                      --seq-length 128
-{'accuracy': 0.9105504587155964, 'total_time_in_seconds': 1.6696950630030187, 'samples_per_second': 522.2510500999329, 'latency_in_seconds': 0.0019147879162878653}
+accuracy: 0.8693
+total_time_in_seconds: 2.3734
+samples_per_second: 367.4128
+latency_in_seconds: 0.0027
 ```
 
-RoBerta
+`model=distilbert-base-uncased-finetuned-sst-2-english`
+```
+accuracy: 0.9106
+total_time_in_seconds: 1.7009
+samples_per_second: 512.6797
+latency_in_seconds: 0.0020
+```
+
+`model=Ibrahim-Alam/finetuning-roberta-base-on-sst2`
+```
+accuracy: 0.9415
+total_time_in_seconds: 2.2931
+samples_per_second: 380.2731
+latency_in_seconds: 0.0026
+```
+
+### IMDB dataset
 
 ```
-$ python inference.py --model Ibrahim-Alam/finetuning-roberta-base-on-sst2 \
-                      --dataset sst2                                       \
-                      --input-column sentence                              \
-                      --metric accuracy                                    \
-                      --batch-size 1                                       \
-                      --seq-length 128
-{'accuracy': 0.9415137614678899, 'total_time_in_seconds': 2.2805290400028753, 'samples_per_second': 382.3674176930896, 'latency_in_seconds': 0.0026152855963335725}
+$ model=<model>
+$ python inference.py --dataset imdb      \
+                      --metric accuracy   \
+                      --batch-size 1      \
+                      --seq-length 128    \
+                      --num-samples 1000  \
+                      --model $model
+```
+
+`model=fabriceyhc/bert-base-uncased-imdb`
+```
+accuracy: 0.8270
+total_time_in_seconds: 3.2782
+samples_per_second: 305.0423
+latency_in_seconds: 0.0033
+```
+
+`model=lvwerra/distilbert-imdb`
+```
+accuracy: 0.8670
+total_time_in_seconds: 2.4173
+samples_per_second: 413.6885
+latency_in_seconds: 0.0024
+```
+
+`model=aychang/roberta-base-imdb`
+```
+accuracy: 0.8440
+total_time_in_seconds: 3.1583
+samples_per_second: 316.6219
+latency_in_seconds: 0.0032
 ```
