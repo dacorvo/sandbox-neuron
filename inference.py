@@ -83,8 +83,8 @@ def main():
         neuron_model_class, task, _ = get_neuron_model_class(model_id)
         neuron_model = neuron_model_class.from_pretrained(args.model)
         # Sanity checks
-        assert args.batch_size == model.config.neuron_batch_size
-        assert args.seq_length == model.config.neuron_sequence_length
+        assert args.batch_size == neuron_model.config.neuron_batch_size
+        assert args.seq_length == neuron_model.config.neuron_sequence_length
         model = None
     else:
         # Get the Neuron class for the specified model_id
@@ -114,7 +114,7 @@ def main():
     print(heading)
     for key in neuron_metric:
         row = f"{key:<30}"
-        if metric is not None:
+        if model is not None:
             row += f"{metric[key]:>20,.4f}"
         row += f"{neuron_metric[key]:>20,.4f}"
         print(row)
