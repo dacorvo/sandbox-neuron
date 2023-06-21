@@ -88,6 +88,32 @@ samples_per_second                         12.9099            385.4777
 latency_in_seconds                          0.0775              0.0026
 ```
 
+#### Ablation study: influence of the precision of the operations
+
+When compiling a model, the operations are by default using float32 inputs and weights.
+
+Two options allow to force the operations to be performed on lower bitwidth numbers:
+
+- auto_cast: 'none' by default, but can be applied to 'matmul', or 'all' operations,
+- auto_cast_type: 'bf16' for bfloat16, or 'fp16' for float16.
+
+The table below gives the inference results for different configurations:
+
+```
+model=distilbert-base-uncased-finetuned-sst-2-english
+batch-size=1
+seq-length=128
+```
+
+| Hub                   | None/float32 | Matmul/float16 | Matmul/bfloat16 | All/float16 | All/bfloat16 |
+|-----------------------|--------------|----------------|-----------------|-------------|--------------|
+| accuracy              | 0.9106       | 0.9106         | 0.9106          | 0.9106      | 0.9106       |
+| total_time_in_seconds | 1.7844       | 1.2501         | 1.1391          | 1.1768      | 1.1967       |
+| samples_per_second    | 488.6926     | 697.5468       | **765.5128**    | 741.0132    | 728.6482     |
+| latency_in_seconds    | 0.0020       | 0.0014         | 0.0013          | 0.0013      | 0.0014       |
+
+For that model, the best option seems to use bfloat16 for matmul only.
+
 ### IMDB dataset
 
 ```
